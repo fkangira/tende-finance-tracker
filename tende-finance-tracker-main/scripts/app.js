@@ -108,6 +108,7 @@ renderRecords(records);
 // dashboard totals
 
 function updateDashboard() {
+    const budgetFill = document.querySelector("#budget-fill");
     const totalRecords = document.querySelector("#total-records");
     const totalSpent = document.querySelector("#total-spent");
     const totalCategory = document.querySelector("#top-category");
@@ -143,13 +144,21 @@ function updateDashboard() {
         }
     }
 
-    topCateegory.textContent = highestCategory || "none";
+    topCategory.textContent = highestCategory || "None";
 
-    const monthyBudget = 300000;
+    const monthlyBudget = 300000;
     const remaining = monthlyBudget - total;
 
+    let percent = (total / monthlyBudget) * 100;
+
+    if (percent > 100) {
+        percent = 100;
+    }
+
+    budgetFill.style.width = `${percent}%`;
+
     if (remaining >= 0) {
-        budgetStatus.textContent = `TZS ${remaining.toLocaleString()} remaing`;
+        budgetStatus.textContent = `TZS ${remaining.toLocaleString()} remaining`;
     } else {
         budgetStatus.textContent = `TZS ${Math.abs(remaining).toLocaleString()} over budget`;
     }

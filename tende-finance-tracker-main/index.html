@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tende</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Tende</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="active">Dashboard</a>
+                <a href="#records">Records</a>
+                <a href="#add-record">Add Record</a>
+                <a href="#settings">Settings</a>
+                <a href="#about">About</a>
+            </nav>
+        </aside>
+
+        <div class="main-area">
+
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Keep track of your daily spending.</p>
+                </div>
+
+                <button class="add-btn">+ Add Expense</button>
+            </header>
+
+            <main>
+
+                <section id="dashboard">
+
+                    <div class="summary-grid">
+
+                        <article class="summary-card">
+                            <p>Total Records</p>
+                            <h2 id="total-records">12</h2>
+                        </article>
+
+                        <article class="summary-card">
+                            <p>Total Spent</p>
+                            <h2 id="total-spent">TZS 245,300</h2>
+                        </article>
+
+                        <article class="summary-card">
+                            <p>Top Category</p>
+                            <h2 id="top-category">Food</h2>
+                        </article>
+
+                    </div>
+
+                    <div class="dashboard-row">
+
+                        <section class="panel chart-panel">
+                            <div class="panel-header">
+                                <div>
+                                    <h2>Spending Overview</h2>
+                                    <p>Last 7 days</p>
+                                </div>
+                            </div>
+
+                            <div class="chart-box">
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 45%"></div>
+                                    <span>Mon</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 70%"></div>
+                                    <span>Tue</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 55%"></div>
+                                    <span>Wed</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 85%"></div>
+                                    <span>Thu</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 60%"></div>
+                                    <span>Fri</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 90%"></div>
+                                    <span>Sat</span>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar" style="height: 50%"></div>
+                                    <span>Sun</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="panel budget-panel">
+                            <h2>Monthly Budget</h2>
+
+                            <div class="budget-number" id="budget-spent">
+                                TZS 245,300
+                            </div>
+
+                            <p class="budget-limit">
+                                of TZS 300,000
+                            </p>
+
+                            <div class="budget-track">
+                                <div class="budget-fill"></div>
+                            </div>
+
+                            <p class="budget-status" id="budget-status">
+                                TZS 54,700 remaining
+                            </p>
+                        </section>
+
+                    </div>
+
+                    <section class="panel recent-panel">
+
+                        <div class="panel-header">
+                            <h2>Recent Expenses</h2>
+                            <a href="#records">View all</a>
+                        </div>
+
+                        <div class="recent-item">
+                            <div>
+                                <strong>Lunch</strong>
+                                <p>Food</p>
+                            </div>
+
+                            <div class="recent-right">
+                                <strong>TZS 5,000</strong>
+                                <span>12 Oct 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="recent-item">
+                            <div>
+                                <strong>Bus fare</strong>
+                                <p>Transport</p>
+                            </div>
+
+                            <div class="recent-right">
+                                <strong>TZS 2,000</strong>
+                                <span>11 Oct 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="recent-item">
+                            <div>
+                                <strong>Printing</strong>
+                                <p>Books</p>
+                            </div>
+
+                            <div class="recent-right">
+                                <strong>TZS 4,500</strong>
+                                <span>10 Oct 2026</span>
+                            </div>
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+                <section id="records" class="page-screen">
+
+                    <div class="section-heading">
+                        <div>
+                            <h1>Records</h1>
+                            <p>View and manage your expenses.</p>
+                        </div>
+
+                        <button class="add-btn">+ Add Expense</button>
+                    </div>
+
+                    <section class="panel records-panel">
+
+                        <div class="records-tools">
+                            <input type="search" id="record-search" placeholder="Search expenses..."
+                                aria-label="Search expenses">
+
+                            <select id="category-filter" aria-label="Filter by category">
+                                <option value="">All Categories</option>
+                                <option>Food</option>
+                                <option>Transport</option>
+                                <option>Books</option>
+                                <option>Entertainment</option>
+                                <option>Fees</option>
+                                <option>Other</option>
+                            </select>
+
+                            <select id="record-sort" aria-label="Sort expenses">
+                                <option value="newest">Newest first</option>
+                                <option value="oldest">Oldest first</option>
+                                <option value="amount-high">Amount high to low</option>
+                                <option value="amount-low">Amount low to high</option>
+                            </select>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="records-body">
+                                    <tr>
+                                        <td>12 Oct 2026</td>
+                                        <td>Lunch</td>
+                                        <td>Food</td>
+                                        <td>TZS 5,000</td>
+                                        <td>
+                                            <button class="action-btn">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>11 Oct 2026</td>
+                                        <td>Bus fare</td>
+                                        <td>Transport</td>
+                                        <td>TZS 2,000</td>
+                                        <td>
+                                            <button class="action-btn">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>10 Oct 2026</td>
+                                        <td>Printing</td>
+                                        <td>Books</td>
+                                        <td>TZS 4,500</td>
+                                        <td>
+                                            <button class="action-btn">Edit</button>
+                                            <button class="action-btn delete">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+                <section id="add-record" class="page-screen">
+
+                    <div class="section-heading">
+                        <div>
+                            <h1>Add Record</h1>
+                            <p>Add a new expense.</p>
+                        </div>
+                    </div>
+
+                    <section class="panel form-panel">
+
+                        <form id="expense-form">
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <input type="text" id="description" name="description" placeholder="Lunch at cafeteria">
+                                <small class="error-message" id="description-error"></small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <input type="number" id="amount" name="amount" placeholder="5000">
+                                <small class="error-message" id="amount-error"></small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category">
+                                    <option value="">Choose category</option>
+                                    <option>Food</option>
+                                    <option>Transport</option>
+                                    <option>Books</option>
+                                    <option>Entertainment</option>
+                                    <option>Fees</option>
+                                    <option>Other</option>
+                                </select>
+                                <small class="error-message" id="category-error"></small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" id="date" name="date">
+                                <small class="error-message" id="date-error"></small>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="add-btn">
+                                    Save Expense
+                                </button>
+
+                                <button type="reset" class="cancel-btn">
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <p id="form-status" class="form-status" aria-live="polite"></p>
+
+                        </form>
+
+                    </section>
+
+                </section>
+
+
+                <section id="settings" class="page-screen">
+
+                    <div class="section-heading">
+                        <div>
+                            <h1>Settings</h1>
+                            <p>Manage your preferences and saved data.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-grid">
+
+                        <section class="panel">
+                            <h2>Currency</h2>
+
+                            <div class="form-group">
+                                <label for="currency">Base currency</label>
+                                <select id="currency">
+                                    <option value="TZS">TZS</option>
+                                    <option value="USD">USD</option>
+                                    <option value="RWF">RWF</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="usd-rate">USD rate</label>
+                                <input type="number" id="usd-rate" value="2600">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rwf-rate">RWF rate</label>
+                                <input type="number" id="rwf-rate" value="0.70" step="0.01">
+                            </div>
+
+                            <button class="add-btn">Save Settings</button>
+                        </section>
+
+                        <section class="panel">
+                            <h2>Data</h2>
+
+                            <p class="settings-text">
+                                Export your records or import saved data.
+                            </p>
+
+                            <div class="settings-actions">
+                                <button class="cancel-btn">Export JSON</button>
+                                <button class="cancel-btn">Import JSON</button>
+                                <button class="danger-btn">Clear Data</button>
+                            </div>
+                        </section>
+
+                    </div>
+
+                </section>
+
+
+                <section id="about" class="page-screen">
+
+                    <div class="section-heading">
+                        <div>
+                            <h1>About Tende</h1>
+                            <p>A simple student finance tracker.</p>
+                        </div>
+                    </div>
+
+                    <section class="panel about-panel">
+
+                        <h2>What is Tende?</h2>
+
+                        <p>
+                            Tende is a simple finance tracker made for students.
+                            It helps a student record expenses and understand
+                            where most of their money is going.
+                        </p>
+
+                        <p>
+                            I built it around common student expenses such as
+                            food, transport, books, entertainment and fees.
+                        </p>
+
+                        <div class="about-details">
+                            <p><strong>Built by:</strong> Fanuel Kangira</p>
+                            <p><strong>GitHub:</strong> fkangira</p>
+                            <p><strong>Project:</strong> Web Development Assignment</p>
+                        </div>
+
+                    </section>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <script src="scripts/validators.js"></script>
+    <script src="scripts/state.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>

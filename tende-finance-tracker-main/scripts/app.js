@@ -1,3 +1,11 @@
+// load saved records first
+const savedRecords = loadRecords();
+
+if (savedRecords) {
+    records = savedRecords;
+}
+
+// page navigation
 const navLinks = document.querySelectorAll(".sidebar-nav a");
 const dashboard = document.querySelector("#dashboard");
 const screens = document.querySelectorAll(".page-screen");
@@ -33,6 +41,20 @@ navLinks.forEach((link) => {
     });
 });
 
+// open the add record page
+const addExpenseButtons = document.querySelectorAll(".add-expense-btn");
+
+addExpenseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const addRecordLink = document.querySelector(
+            `.sidebar-nav a[href="#add-record"]`
+        );
+
+        showPage("add-record", addRecordLink);
+    });
+});
+
+// form inputs 
 const expenseForm = document.querySelector("#expense-form");
 
 const descriptionInput = document.querySelector("#description");
@@ -40,6 +62,9 @@ const amountInput = document.querySelector("#amount");
 const categoryInput = document.querySelector("#category");
 const dateInput = document.querySelector("#date");
 
+let editingRecordId = null;
+
+// show form errors
 function showError(input, message) {
     const error = document.querySelector(`#${input.id}-error`);
 
@@ -52,6 +77,7 @@ function showError(input, message) {
     }
 }
 
+// check the form
 expenseForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -75,16 +101,45 @@ expenseForm.addEventListener("submit", (event) => {
         return;
     }
 
+    if (editingRecordId) {
+        const recordToEdit = records.find((record) => {
+            return record.id === editingRecordId;
+        });
+
+        recordToEdit.description = descriptionInput.value.trim();
+        recordToEdit.amount = Number(amountInput.value);
+        recordToEdit.category = categoryInput.value;
+        recordToEdit.date = dateInput.value;
+
+        editingRecordId = null;
+    } else {
+        const newRecord = {
+            id: `rec_${Date.now()}`,
+            description: descriptionInput.value.trim(),
+            amount: Number(amountInput.value),
+            category: categoryInput.value,
+            date: dateInput.value
+        };
+
+        records.push(newRecord);
+    }
+
+
+    saveRecords(records);
+    renderRecords(records);
+    updateDashboard();
+
+    expenseForm.reset();
     const formStatus = document.querySelector("#form-status");
-    formStatus.textContent = "Expense looks good.";
+    formStatus.textContent = "Expense saved.";
 });
 
-// records page controls
-
+// records controls
 const searchInput = document.querySelector("#record-search");
 const categoryFilter = document.querySelector("#category-filter");
 const sortSelect = document.querySelector("#record-sort");
 
+// update records table
 function updateRecords() {
     let filtered = searchRecords(records, searchInput.value);
 
@@ -105,24 +160,25 @@ sortSelect.addEventListener("change", updateRecords);
 
 renderRecords(records);
 
-// dashboard totals
-
+// dashboard numbers
 function updateDashboard() {
     const budgetFill = document.querySelector("#budget-fill");
     const totalRecords = document.querySelector("#total-records");
     const totalSpent = document.querySelector("#total-spent");
-    const totalCategory = document.querySelector("#top-category");
+    const topCategory = document.querySelector("#top-category");
     const budgetSpent = document.querySelector("#budget-spent");
     const budgetStatus = document.querySelector("#budget-status");
 
-    const totl = records.reduce((sum, record) => {
-        return sum = record.amount;
+    // add all expenses
+    const total = records.reduce((sum, record) => {
+        return sum + record.amount;
     }, 0);
 
     totalRecords.textContent = records.length;
     totalSpent.textContent = `TZS ${total.toLocaleString()}`;
     budgetSpent.textContent = `TZS ${total.toLocaleString()}`;
 
+    // add total for each category
     const categoryTotals = {};
 
     records.forEach((record) => {
@@ -130,10 +186,11 @@ function updateDashboard() {
             categoryTotals[record.category] = 0;
         }
 
-        categoryTotals[record.category] == record.amount;
+        categoryTotals[record.category] += record.amount;
+
     });
 
-
+    // find the highest category
     let highestCategory = "";
     let highestAmount = 0;
 
@@ -146,6 +203,7 @@ function updateDashboard() {
 
     topCategory.textContent = highestCategory || "None";
 
+    // monthly budget
     const monthlyBudget = 300000;
     const remaining = monthlyBudget - total;
 
@@ -164,4 +222,54 @@ function updateDashboard() {
     }
 }
 
+// delete a record
+const recordsBody = document.querySelector("#records-body");
+
+recordsBody.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("delete-btn")) {
+        return;
+    }
+
+    const recordId = event.target.dataset.id;
+
+    records = records.filter((record) => {
+        return record.id !== recordId;
+    });
+
+    saveRecords(records);
+    renderRecords(records);
+    updateDashboard();
+});
+
+// edit a record
+recordsBody.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("edit-btn")) {
+        return;
+    }
+
+    const recordId = event.target.dataset.id;
+
+    const recordToEdit = records.find((record) => {
+        return record.id === recordId;
+    });
+
+    if (!recordToEdit) {
+        return;
+    }
+
+    descriptionInput.value = recordToEdit.description;
+    amountInput.value = recordToEdit.amount;
+    categoryInput.value = recordToEdit.category;
+    dateInput.value = recordToEdit.date;
+
+    editingRecordId = recordId;
+
+    const addRecordLink = document.querySelector(
+        `.sidebar-nav a[href="#add-record"]`
+    );
+
+    showPage("add-record", addRecordLink);
+});
+
+renderRecords(records);
 updateDashboard();

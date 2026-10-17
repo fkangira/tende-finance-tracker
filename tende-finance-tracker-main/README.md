@@ -142,3 +142,26 @@ The Add Record page will use a simple form.
 The Settings page will contain currency and data options.
 
 The About page will contain a short explanation of the project and my information.
+
+
+## Final Features
+
+Tende now includes:
+
+- Responsive dashboard and navigation
+- Add, edit and delete expense records
+- Form validation using regular expressions
+- Search, filter and sorting
+- Dashboard totals and budget tracking
+- LocalStorage persistence
+- JSON export and import
+- Clear data option
+- Seed data in `seed.json`
+- Browser-based tests in `tests.html`
+
+## Running the Project
+
+From the parent folder, run:
+
+```powershell
+python -m http.server 5500 --directory tende-finance-tracker-main

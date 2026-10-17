@@ -273,3 +273,86 @@ recordsBody.addEventListener("click", (event) => {
 
 renderRecords(records);
 updateDashboard();
+
+// Import records from a JSON file
+const importButton = document.querySelector("#import-data");
+const importFile = document.querySelector("#import-file");
+
+importButton.addEventListener("click", () => {
+    importFile.click();
+});
+
+importFile.addEventListener("change", () => {
+    const selectedFile = importFile.files[0];
+
+    if (!selectedFile) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+        try {
+            const importedRecords = JSON.parse(reader.result);
+
+            if (!Array.isArray(importedRecords)) {
+                alert("The selected file is not a valid records file.");
+                return;
+            }
+
+            records = importedRecords;
+
+            saveRecords(records);
+            renderRecords(records);
+            updateDashboard();
+
+            alert("Records imported successfuly.");
+        } catch {
+            alert("Could not read this JSON file.");
+        }
+
+        importFile.value = "";
+    });
+
+    reader.readAsText(selectedFile);
+});
+
+// Clear all saved records
+const clearButton = document.querySelector("#clear-data");
+
+clearButton.addEventListener("click", () => {
+    const confirmed = confirm("Are you sure you want to clear all records?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    records = [];
+
+    saveRecords(records);
+    renderRecords(records);
+    updateDashboard();
+
+    alert("All records cleared.");
+});
+
+// export records as a JSON file
+const exportButton = document.querySelector("#export-data");
+
+exportButton.addEventListener("click", () => {
+    const jsonData = JSON.stringify(records, null, 2);
+
+    const file = new Blob([jsonData], {
+        type: "application/json"
+    });
+
+    const fileUrl = URL.createObjectURL(file);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = fileUrl;
+    downloadLink.download = "tende-records-json";
+
+    downloadLink.click();
+
+    URL.revokeObjectURL(fileUrl);
+});

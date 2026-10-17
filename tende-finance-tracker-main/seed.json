@@ -1,0 +1,65 @@
+[
+    {
+        "id": "rec_001",
+        "description": "Lunch",
+        "amounr": 5000,
+        "category": "Food",
+        "date": "2026-10-12"
+    },
+    {
+        "id": : "rec_002",
+        "description": "Bus fare",
+        "amount": 2000,
+        "category": "Transport",
+        "date": "2026-10-11"
+    },
+    {
+        "id": "rec_003",
+        "description": "Printing",
+        "amount": 4500,
+        "category": "Books",
+        "date": "2026-10-10"
+    },
+    {
+        "id": "rec_004",
+        "description": "Notebook",
+        "amount": 3500,
+        "category": "Books",
+        "date": "2026-10-09"
+    },
+    {
+        "id": "rec_005",
+        "description": "Dinner",
+        "amount": 7000,
+        "category": "Food",
+        "date": "2026-10-08"
+    },
+    {
+        "id": "rec_006",
+        "description": "Taxi",
+        "amount": 12000,
+        "category": "Transport",
+        "date": "2026-10-07"
+    },
+    {
+        "id": "rec_008",
+        "description": "School fee",
+        "amount": 50000,
+        "category": "Fee",
+        "date": "2026-10-05"
+    },
+    {
+        "id": "rec_009",
+        "description": "Breakfast",
+        "amount": 3000,
+        "category": "Food",
+        "date": "2026-10-04"
+    },
+    {
+        "id": "rec_010",
+        "description": "Internet bundle",
+        "amount": 10000,
+        "category": "Other",
+        "date": "2026-10-03"
+    },
+]

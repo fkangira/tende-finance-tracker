@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tende tests</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .summary {
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .test-section {
+            margin-bottom: 32px;
+        }
+
+        .test-section h2 {
+            margin-bottom: 12px;
+        }
+
+        .test-result {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .pass {
+            font-weight: bold;
+        }
+
+        .fail {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Tende Test Page</h1>
+    <p>This page checks important parts of the Tende finance tracker.</p>
+
+    <div class="summary" id="test-summary">
+        Running tests...
+    </div>
+
+    <div id="test-results"></div>
+
+    <script src="scripts/validators.js"></script>
+    <script src="scripts/search.js"></script>
+
+    <script>
+        const results = document.querySelector("#test-results");
+        const summary = document.querySelector("#test-summary");
+
+        let passedTests = 0;
+        let failedTests = 0;
+
+        function createSection(title) {
+            const section = document.createElement("section");
+            section.className = "test-section";
+
+            const heading = document.createElement("h2");
+            heading.textContent = title;
+
+            section.appendChild(heading);
+            results.appendChild(section);
+
+            return section;
+        }
+
+        function runTest(section, name, condition) {
+            const result = document.createElement("div");
+            result.className = "test-result";
+
+            if (condition) {
+                result.textContent = `PASS: ${name}`;
+                result.classList.add("pass");
+                passedTests++;
+            } else {
+                result.textContent = `FAIL: ${name}`;
+                result.classList.add("fail");
+                failedTests++;
+            }
+
+            section.appendChild(result);
+
+        }
+
+        // Sample records used by the search and sort tests
+        const sampleRecords = [
+            {
+                id: "rec_001",
+                description: "Lunch",
+                amount: 5000,
+                category: "Food",
+                date: "2026-10-12"
+            },
+            {
+                id: "rec_002",
+                description: "Bus fare",
+                amount: 2000,
+                category: "Transport",
+                date: "2026-10-11"
+            },
+            {
+                id: "rec_003",
+                description: "Printing",
+                amount: 4500,
+                category: "Books",
+                date: "2026-10-10"
+            }
+        ];
+
+        // description texts
+        const descriptionSection = createSection("Description validation");
+
+        runTest(
+            descriptionSection,
+            "Normal description is accepted",
+            validateDescription("Lunch at school") === ""
+        );
+
+        runTest(
+            descriptionSection,
+            "Description ending with a space is rejected",
+            validateDescription("Lunch ") !== ""
+        );
+
+        runTest(
+            descriptionSection,
+            "Repeated word is rejected",
+            validateDescription("Lunch Lunch") !== ""
+        );
+
+        // amount tests
+        const amountSection = createSection("Amount Validation");
+
+        runTest(
+            amountSection,
+            "Whole number amount is accpeted",
+            validateAmount("5000") === ""
+        );
+
+        runTest(
+            amountSection,
+            "Decimal amount is accepted",
+            validateAmount("5000.50") === ""
+        );
+
+        runTest(
+            amountSection,
+            "Negative amount is rejected",
+            validateAmount("-500") !== ""
+        );
+
+        runTest(
+            amountSection,
+            "Letters in amount are rejected",
+            validateAmount("five") !== ""
+        );
+
+        runTest(
+            amountSection,
+            "More than two decimal places are rejected",
+            validateAmount("5000.555") !== ""
+        );
+
+        // date tests
+        const dateSection = createSection("Date validation");
+
+        runTest(
+            dateSection,
+            "Valid date is accepted",
+            validateDate("2026-10-12") === ""
+        );
+
+        runTest(
+            dateSection,
+            "Date with wrong month is rejected",
+            validateDate("2026-13-12") !== ""
+        );
+
+        runTest(
+            dateSection,
+            "Date with wrong format is rejected",
+            validateDate("12-10-2026") !== ""
+        );
+
+        // category tests
+        const categorySection = createSection("category Validation");
+
+        runTest(
+            categorySection,
+            "Single-word category is accepted",
+            validateCategory("Food") === ""
+        );
+
+        runTest(
+            categorySection,
+            "category with numbers is rejected",
+            validateCategory("Food123") !== ""
+        );
+
+        // search tests
+        const searchSection = createSection("search tests");
+
+        runTest(
+            searchSection,
+            "Search finds a description",
+            searchRecords(sampleRecords, "Lunch").length === 1
+        );
+
+        runTest(
+            searchSection,
+            "Search finds a category",
+            searchRecords(sampleRecords, "Food").length === 1
+        );
+
+        runTest(
+            searchSection,
+            "search finds a date",
+            searchRecords(sampleRecords, "2026-10-11").length === 1
+        );
+
+        runTest(
+            searchSection,
+            "Search is case-insensitive",
+            searchRecords(sampleRecords, "lunch").length === 1
+        );
+
+        runTest(
+            searchSection,
+            "Empty search returns all records",
+            searchRecords(sampleRecords, "").length === 3
+        );
+
+        runTest(
+            searchSection,
+            "Invalid regular expression returns no records",
+            searchRecords(sampleRecords, "[").length === 0
+        );
+
+        // dorting tests
+        const sortSection = createSection("Sorting Tests");
+
+        const newest = sortRecords(sampleRecords, "newest");
+
+        runTest(
+            sortSection,
+            "Newest sort puts latest date first",
+            newest[0].date === "2026-10-12"
+        );
+
+        const oldest = sortRecords(sampleRecords, "oldest");
+
+        runTest(
+            sortSection,
+            "Oldest sort puts earliest date first",
+            oldest[0].date === "2026-10-10"
+        );
+
+        const highest = sortRecords(sampleRecords, "amount-high");
+
+        runTest(
+            sortSection,
+            "Amount high-to-low puts largest amount first",
+            highest[0].amount === 5000
+        );
+
+        const lowest = sortRecords(sampleRecords, "amount-low");
+
+        runTest(
+            sortSection,
+            "Amount low-to-high puts smallest amount first",
+            lowest[0].amount === 2000
+        );
+
+        // make sure sorting does not change the origonal array
+        runTest(
+            sortSection,
+            "Sorting keeps the original records array unchanged",
+            sampleRecords[0].description === "Lunch"
+        );
+
+        // final summary
+        const totalTests = passedTests + failedTests;
+
+        summary.textContent =
+            `${passedTests} passed, ${failedTests} failed, ${totalTests} total tests.`;
+
+    </script>
+</body>
+
+</html>

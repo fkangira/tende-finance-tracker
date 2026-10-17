@@ -375,9 +375,11 @@
                             </p>
 
                             <div class="settings-actions">
-                                <button class="cancel-btn">Export JSON</button>
-                                <button class="cancel-btn">Import JSON</button>
-                                <button class="danger-btn">Clear Data</button>
+                                <button class="cancel-btn" id="export-data">Export JSON</button>
+                                <button class="cancel-btn" id="import-data">Import JSON</button>
+                                <button class="danger-btn" id="clear-data">Clear Data</button>
+
+                                <input type="file" id="import-file" accept=".json" hidden>
                             </div>
                         </section>
 

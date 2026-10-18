@@ -5,6 +5,7 @@ if (savedRecords) {
     records = savedRecords;
 }
 
+
 // page navigation
 const navLinks = document.querySelectorAll(".sidebar-nav a");
 const dashboard = document.querySelector("#dashboard");
@@ -26,10 +27,10 @@ function showPage(pageId, link) {
         document.querySelector(`#${pageId}`).classList.add("active-screen");
     }
 
-    link.classList.add("active");
-
-    const pageName = link.textContent.trim();
-    title.textContent = pageName;
+    if (link) {
+        link.classList.add("active");
+        title.textContent = link.textContent.trim();
+    }
 }
 
 navLinks.forEach((link) => {
@@ -41,20 +42,22 @@ navLinks.forEach((link) => {
     });
 });
 
+
 // open the add record page
 const addExpenseButtons = document.querySelectorAll(".add-expense-btn");
 
 addExpenseButtons.forEach((button) => {
     button.addEventListener("click", () => {
         const addRecordLink = document.querySelector(
-            `.sidebar-nav a[href="#add-record"]`
+            '.sidebar-nav a[href="#add-record"]'
         );
 
         showPage("add-record", addRecordLink);
     });
 });
 
-// form inputs 
+
+// form inputs
 const expenseForm = document.querySelector("#expense-form");
 
 const descriptionInput = document.querySelector("#description");
@@ -63,6 +66,7 @@ const categoryInput = document.querySelector("#category");
 const dateInput = document.querySelector("#date");
 
 let editingRecordId = null;
+
 
 // show form errors
 function showError(input, message) {
@@ -77,7 +81,8 @@ function showError(input, message) {
     }
 }
 
-// check the form
+
+// add or edit a record
 expenseForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -101,10 +106,14 @@ expenseForm.addEventListener("submit", (event) => {
         return;
     }
 
-    if (editingRecordId) {
+    if (editingRecordId !== null) {
         const recordToEdit = records.find((record) => {
-            return record.id === editingRecordId;
+            return String(record.id) === String(editingRecordId);
         });
+
+        if (!recordToEdit) {
+            return;
+        }
 
         recordToEdit.description = descriptionInput.value.trim();
         recordToEdit.amount = Number(amountInput.value);
@@ -124,22 +133,22 @@ expenseForm.addEventListener("submit", (event) => {
         records.push(newRecord);
     }
 
-
     saveRecords(records);
     renderRecords(records);
     updateDashboard();
 
     expenseForm.reset();
+
     const formStatus = document.querySelector("#form-status");
     formStatus.textContent = "Expense saved.";
 });
+
 
 // records controls
 const searchInput = document.querySelector("#record-search");
 const categoryFilter = document.querySelector("#category-filter");
 const sortSelect = document.querySelector("#record-sort");
 
-// update records table
 function updateRecords() {
     let filtered = searchRecords(records, searchInput.value);
 
@@ -158,7 +167,59 @@ searchInput.addEventListener("input", updateRecords);
 categoryFilter.addEventListener("change", updateRecords);
 sortSelect.addEventListener("change", updateRecords);
 
-renderRecords(records);
+
+// records table
+const recordsBody = document.querySelector("#records-body");
+
+
+// edit a record
+recordsBody.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("edit-btn")) {
+        return;
+    }
+
+    const recordId = event.target.dataset.id;
+
+    const recordToEdit = records.find((record) => {
+        return String(record.id) === String(recordId);
+    });
+
+    if (!recordToEdit) {
+        return;
+    }
+
+    descriptionInput.value = recordToEdit.description;
+    amountInput.value = recordToEdit.amount;
+    categoryInput.value = recordToEdit.category;
+    dateInput.value = recordToEdit.date;
+
+    editingRecordId = recordToEdit.id;
+
+    const addRecordLink = document.querySelector(
+        '.sidebar-nav a[href="#add-record"]'
+    );
+
+    showPage("add-record", addRecordLink);
+});
+
+
+// delete a record
+recordsBody.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("delete-btn")) {
+        return;
+    }
+
+    const recordId = event.target.dataset.id;
+
+    records = records.filter((record) => {
+        return String(record.id) !== String(recordId);
+    });
+
+    saveRecords(records);
+    renderRecords(records);
+    updateDashboard();
+});
+
 
 // dashboard numbers
 function updateDashboard() {
@@ -169,16 +230,14 @@ function updateDashboard() {
     const budgetSpent = document.querySelector("#budget-spent");
     const budgetStatus = document.querySelector("#budget-status");
 
-    // add all expenses
     const total = records.reduce((sum, record) => {
-        return sum + record.amount;
+        return sum + Number(record.amount);
     }, 0);
 
     totalRecords.textContent = records.length;
     totalSpent.textContent = `TZS ${total.toLocaleString()}`;
     budgetSpent.textContent = `TZS ${total.toLocaleString()}`;
 
-    // add total for each category
     const categoryTotals = {};
 
     records.forEach((record) => {
@@ -186,11 +245,9 @@ function updateDashboard() {
             categoryTotals[record.category] = 0;
         }
 
-        categoryTotals[record.category] += record.amount;
-
+        categoryTotals[record.category] += Number(record.amount);
     });
 
-    // find the highest category
     let highestCategory = "";
     let highestAmount = 0;
 
@@ -203,7 +260,6 @@ function updateDashboard() {
 
     topCategory.textContent = highestCategory || "None";
 
-    // monthly budget
     const monthlyBudget = 300000;
     const remaining = monthlyBudget - total;
 
@@ -213,98 +269,23 @@ function updateDashboard() {
         percent = 100;
     }
 
+    if (percent < 0) {
+        percent = 0;
+    }
+
     budgetFill.style.width = `${percent}%`;
 
     if (remaining >= 0) {
-        budgetStatus.textContent = `TZS ${remaining.toLocaleString()} remaining`;
+        budgetStatus.textContent =
+            `TZS ${remaining.toLocaleString()} remaining`;
     } else {
-        budgetStatus.textContent = `TZS ${Math.abs(remaining).toLocaleString()} over budget`;
+        budgetStatus.textContent =
+            `TZS ${Math.abs(remaining).toLocaleString()} over budget`;
     }
 }
 
-// delete a record
-const recordsBody = document.querySelector("#records-body");
 
-// edit a record
-recordsBody.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("edit-btn")) {
-        return;
-    }
-
-    const recordId = event.target.dataset.id;
-
-    const recordToEdit = records.find((record) => {
-        return record.id === recordId;
-    });
-
-    if (!recordToEdit) {
-        return;
-    }
-
-    descriptionInput.value = recordToEdit.description;
-    amountInput.value = recordToEdit.amount;
-    categoryInput.value = recordToEdit.category;
-    dateInput.value = recordToEdit.date;
-
-    editingRecordId = recordId;
-
-    const addRecordLink = document.querySelector(
-        '.sidebar-nav a[href="#add-record"]'
-    );
-
-    showPage("add-record", addRecordLink);
-});
-
-recordsBody.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("delete-btn")) {
-        return;
-    }
-
-    const recordId = event.target.dataset.id;
-
-    records = records.filter((record) => {
-        return record.id !== recordId;
-    });
-
-    saveRecords(records);
-    renderRecords(records);
-    updateDashboard();
-});
-
-// edit a record
-recordsBody.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("edit-btn")) {
-        return;
-    }
-
-    const recordId = event.target.dataset.id;
-
-    const recordToEdit = records.find((record) => {
-        return record.id === recordId;
-    });
-
-    if (!recordToEdit) {
-        return;
-    }
-
-    descriptionInput.value = recordToEdit.description;
-    amountInput.value = recordToEdit.amount;
-    categoryInput.value = recordToEdit.category;
-    dateInput.value = recordToEdit.date;
-
-    editingRecordId = recordId;
-
-    const addRecordLink = document.querySelector(
-        `.sidebar-nav a[href="#add-record"]`
-    );
-
-    showPage("add-record", addRecordLink);
-});
-
-renderRecords(records);
-updateDashboard();
-
-// Import records from a JSON file
+// import records from JSON
 const importButton = document.querySelector("#import-data");
 const importFile = document.querySelector("#import-file");
 
@@ -336,7 +317,7 @@ importFile.addEventListener("change", () => {
             renderRecords(records);
             updateDashboard();
 
-            alert("Records imported successfuly.");
+            alert("Records imported successfully.");
         } catch {
             alert("Could not read this JSON file.");
         }
@@ -347,11 +328,14 @@ importFile.addEventListener("change", () => {
     reader.readAsText(selectedFile);
 });
 
-// Clear all saved records
+
+// clear all saved records
 const clearButton = document.querySelector("#clear-data");
 
 clearButton.addEventListener("click", () => {
-    const confirmed = confirm("Are you sure you want to clear all records?");
+    const confirmed = confirm(
+        "Are you sure you want to clear all records?"
+    );
 
     if (!confirmed) {
         return;
@@ -366,7 +350,8 @@ clearButton.addEventListener("click", () => {
     alert("All records cleared.");
 });
 
-// export records as a JSON file
+
+// export records as JSON
 const exportButton = document.querySelector("#export-data");
 
 exportButton.addEventListener("click", () => {
@@ -379,10 +364,16 @@ exportButton.addEventListener("click", () => {
     const fileUrl = URL.createObjectURL(file);
 
     const downloadLink = document.createElement("a");
+
     downloadLink.href = fileUrl;
-    downloadLink.download = "tende-records-json";
+    downloadLink.download = "tende-records.json";
 
     downloadLink.click();
 
     URL.revokeObjectURL(fileUrl);
 });
+
+
+// first page load
+renderRecords(records);
+updateDashboard();

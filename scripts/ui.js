@@ -1,5 +1,3 @@
-// update the records table
-
 function renderRecords(items) {
     const body = document.querySelector("#records-body");
 

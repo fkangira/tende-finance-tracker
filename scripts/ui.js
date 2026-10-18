@@ -14,7 +14,7 @@ function renderRecords(items) {
             <td>${record.category}</td>
             <td>TZS ${record.amount.toLocaleString()}</td>
             <td>
-                <button class="action-btn" edit-btn" data id="${record.id}">Edit</button>
+                <button class="action-btn edit-btn" data-id="${record.id}">Edit</button>
                 <button class="action-btn delete-btn" data-id="${record.id}">Delete</button>
             </td>
         `;

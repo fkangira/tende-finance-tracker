@@ -64,6 +64,18 @@ const dateInput = document.querySelector("#date");
 
 let editingRecordId = null;
 
+// form submit logic
+expenseForm.addEventListener("submit", ...);
+
+// records table
+const recordsBody = document.querySelector("#records-body");
+
+// delete logic
+recordsBody.addEventListener("click", ...);
+
+// edit logic
+recordsBody.addEventListener("click", ...);
+
 // show form errors
 function showError(input, message) {
     const error = document.querySelector(`#${input.id}-error`);
@@ -224,6 +236,36 @@ function updateDashboard() {
 
 // delete a record
 const recordsBody = document.querySelector("#records-body");
+
+// edit a record
+recordsBody.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("edit-btn")) {
+        return;
+    }
+
+    const recordId = event.target.dataset.id;
+
+    const recordToEdit = records.find((record) => {
+        return record.id === recordId;
+    });
+
+    if (!recordToEdit) {
+        return;
+    }
+
+    descriptionInput.value = recordToEdit.description;
+    amountInput.value = recordToEdit.amount;
+    categoryInput.value = recordToEdit.category;
+    dateInput.value = recordToEdit.date;
+
+    editingRecordId = recordId;
+
+    const addRecordLink = document.querySelector(
+        '.sidebar-nav a[href="#add-record"]'
+    );
+
+    showPage("add-record", addRecordLink);
+});
 
 recordsBody.addEventListener("click", (event) => {
     if (!event.target.classList.contains("delete-btn")) {

@@ -64,18 +64,6 @@ const dateInput = document.querySelector("#date");
 
 let editingRecordId = null;
 
-// form submit logic
-expenseForm.addEventListener("submit", ...);
-
-// records table
-const recordsBody = document.querySelector("#records-body");
-
-// delete logic
-recordsBody.addEventListener("click", ...);
-
-// edit logic
-recordsBody.addEventListener("click", ...);
-
 // show form errors
 function showError(input, message) {
     const error = document.querySelector(`#${input.id}-error`);
